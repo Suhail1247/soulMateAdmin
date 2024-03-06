@@ -7,10 +7,28 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
-
+import { fetchAdminData } from '../../helper/helper';
+import { useNavigate } from 'react-router-dom';
+import Logout from './Logout';
 export default function MenuListComposition() {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+  const [adminData,setAdminData]=React.useState()
+  const [logout,setLogout]=React.useState(false)
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token")
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const adminData = await fetchAdminData();
+        setAdminData(adminData);
+
+      } catch (error) {
+        console.error("Error in UserProfile:", error);
+      }
+    };
+    fetchData();
+  }, [logout]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -43,7 +61,16 @@ export default function MenuListComposition() {
     prevOpen.current = open;
   }, [open]);
 
+   const showLogout=()=>{
+    setLogout(true)
+  }
+
+  const done = () => {
+    setLogout(false);
+  };
+
   return (
+    <>
     <Stack direction="row" spacing={2}>
     
       <div>
@@ -84,7 +111,7 @@ export default function MenuListComposition() {
                   >
                     <MenuItem onClick={handleClose}>Profile</MenuItem>
                     <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem onClick={showLogout}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -93,5 +120,9 @@ export default function MenuListComposition() {
         </Popper>
       </div>
     </Stack>
+    
+      <Logout open={logout} done={done}/>
+  
+</>
   );
 }
