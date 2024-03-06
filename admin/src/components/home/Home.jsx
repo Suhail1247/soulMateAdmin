@@ -7,6 +7,7 @@ import Update from "./Update";
 import DeleteUser from "./DeleteUser";
 import ViewUser from "./ViewUser";
 import Navbar from "./Navbar";
+ 
 function home() {
   const navigate = useNavigate();
   const [logout, setLogout] = useState();
@@ -73,7 +74,7 @@ function home() {
               <div className="popup">
                 <p>Are you sure you want to logout?</p>
                 <button className="btn btn-danger w-25" onClick={logoutAction}>
-                  OK
+                  Yes
                 </button>
                 <br />
                 <button

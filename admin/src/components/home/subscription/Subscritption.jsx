@@ -27,17 +27,6 @@ function home() {
   }, [token]);
 
 
-  // const showLogout=()=>{
-  //   setLogout(true)
-  // }
-  // const logoutAction=()=>{
-  //   localStorage.removeItem('token')
-  //   navigate('/')
-  // }
-  // const cancelLogout = () => {
-  //   setLogout(false);
-  // };
-
 
   return (
     <>
@@ -48,14 +37,7 @@ function home() {
             <Sidebar />
           </div>
 <div className="col-10 " style={{backgroundColor:'#D3D3D3',height:'90vh'}}>
-  {logout ?
-  (<div className="popup">
-      <p>Are you sure you want to logout?</p>
-      <button className="btn btn-danger w-25" onClick={logoutAction}>OK</button><br/>
-      <button className="btn btn-warning mt-3 w-25"  onClick={cancelLogout}>Cancel</button>
-    </div>)
-     :
-    (
+ 
   <Box className='ms-5' sx={{ width: '90%' }}>
         <Tabs
           value={value}
@@ -67,13 +49,13 @@ function home() {
           <Tab value="one" label="Normal" />
           <Tab value="two" label="Premium" />
         </Tabs>
-      </Box>)}
-      {!logout && value === 'one' && (
+      </Box>
+      { value === 'one' && (
         <div className="justify-center m-5">
           <NormalSubscritption />
         </div>
       )}
-      {!logout &&  value === 'two' && (
+      {  value === 'two' && (
         <div className="justify-center m-5">
           <Premium/>
         </div>
