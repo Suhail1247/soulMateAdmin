@@ -40,7 +40,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    redirectTo: "/",
+    redirectTo: "/dashboard",
   }
 );
   return (
