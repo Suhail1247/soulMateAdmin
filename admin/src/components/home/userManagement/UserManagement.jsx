@@ -3,34 +3,37 @@ import { fetchUserData } from "../../../helper/helper";
 import { CiViewList } from "react-icons/ci";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin2Fill } from "react-icons/ri";
+import { MdClear } from "react-icons/md"; // Import clear icon
 import DataTable from "react-data-table-component";
 
 function UserManagement(props) {
   const [userData, setUserData] = useState([]);
   const [dataSource, setDataSource] = useState([]);
+  const [searchValue, setSearchValue] = useState(""); // State for search value
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedUserData = await fetchUserData();
         setUserData(fetchedUserData);
+        setDataSource(fetchedUserData); // Set dataSource as well
       } catch (error) {
-        console.error("Error in UserProfile:", error);
+        console.error("Error fetching user data:", error);
       }
     };
     fetchData();
   }, []);
 
-  const update = () => {
-    props.showUpdate();
+  const update = (row) => {
+    props.showUpdate(row); // Pass row data to showUpdate function
   };
 
-  const view = () => {
-    props.showView();
+  const view = (row) => {
+    props.showView(row); // Pass row data to showView function
   };
 
-  const deleteUser = () => {
-    props.showDelete();
+  const deleteUser = (row) => {
+    props.showDelete(row); // Pass row data to showDelete function
   };
 
   const columns = [
@@ -45,14 +48,13 @@ function UserManagement(props) {
       ),
       sortable: false,
     },
-    
     {
-      name: " Name",
-      selector: (row) => row.lastName,
+      name: "Name",
+      selector: (row) => `${row.firstName} ${row.lastName}`, // Combine first and last name
       sortable: true,
     },
     {
-      name: " Phone",
+      name: "Phone",
       selector: (row) => row.number,
       sortable: true,
     },
@@ -61,7 +63,6 @@ function UserManagement(props) {
       selector: (row) => row.email,
       sortable: true,
     },
-    
     {
       name: "Gender",
       selector: (row) => row.gender,
@@ -91,29 +92,42 @@ function UserManagement(props) {
 
   const handleFilter = (event) => {
     const keyword = event.target.value.toLowerCase();
+    setSearchValue(keyword); // Update search value state
     const filtered = dataSource.filter((row) => {
-      const name = row.firstName ? row.firstName.toLowerCase() : "";  
-      return name.includes(keyword);
+      const fullName = `${row.firstName} ${row.lastName}`.toLowerCase(); // Combine first and last name for filtering
+      return fullName.includes(keyword);
     });
     setUserData(filtered);
   };
 
+  const clearSearch = () => {
+    setSearchValue(""); // Clear search value state
+    setUserData(dataSource); // Reset data to original dataSource
+  };
+
   return (
     <div>
-      <div className="text" style={{ width: "300px", float: "right",marginTop:"30px" }}>
+      <div className="text" style={{ width: "300px", float: "right", marginTop: "30px", position: "relative" }}>
         <input
           type="text"
           className="form-control"
           name="search"
           id="search"
           placeholder="Search"
+          value={searchValue}  
           onChange={handleFilter}
         />
+        {searchValue && (  
+          <MdClear
+            onClick={clearSearch}
+            style={{ position: "absolute", top: "50%", right: "10px", transform: "translateY(-50%)", cursor: "pointer" }}
+          />
+        )}
       </div>
       <DataTable
         title="Users"
         columns={columns}
-        data={userData} // Render the filtered data
+        data={userData}
         fixedHeader
         selectableRows
         pagination
