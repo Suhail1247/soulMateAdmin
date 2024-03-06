@@ -27,17 +27,6 @@ function home() {
   }, [token]);
 
 
-  // const showLogout=()=>{
-  //   setLogout(true)
-  // }
-  // const logoutAction=()=>{
-  //   localStorage.removeItem('token')
-  //   navigate('/')
-  // }
-  // const cancelLogout = () => {
-  //   setLogout(false);
-  // };
-
 
   return (
     <>
@@ -66,7 +55,11 @@ function home() {
           <NormalSubscritption />
         </div>
       )}
+<<<<<<< HEAD
       { value === 'two' && (
+=======
+      {  value === 'two' && (
+>>>>>>> 34593272069eb97b5ca973fc96d0e20b4e1e7575
         <div className="justify-center m-5">
           <Premium/>
         </div>
