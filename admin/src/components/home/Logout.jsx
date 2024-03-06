@@ -35,7 +35,6 @@ const navigate=useNavigate()
         <button className="btn btn-danger w-25" onClick={logoutAction}>OK</button><br/>
         <button className="btn btn-warning mt-3 w-25"  onClick={handleClose}>Cancel</button></div>
         </DialogContent>
-        
       </Dialog>
     </React.Fragment>
   );

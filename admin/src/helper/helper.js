@@ -29,6 +29,7 @@ export async function registerUser(credential) {
       throw error.response.data || { error: 'Internal Server Error' };
     }
   };
+  
 
   export const fetchAdminData = async () => {
     try {
