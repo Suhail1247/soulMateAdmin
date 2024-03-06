@@ -36,6 +36,8 @@ function home() {
   const cancelLogout = () => {
     setLogout(false);
   };
+  
+  //  logout
 
   const showUpdate = () => {
     setUpdateUser(true);
