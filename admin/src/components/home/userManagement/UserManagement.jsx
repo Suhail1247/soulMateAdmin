@@ -8,6 +8,7 @@ import DataTable from "react-data-table-component";
 
 function UserManagement(props) {
   const [userData, setUserData] = useState([]);
+
   const [dataSource, setDataSource] = useState([]);
   const [searchValue, setSearchValue] = useState(""); // State for search value
 
@@ -93,40 +94,58 @@ function UserManagement(props) {
   const handleFilter = (event) => {
     const keyword = event.target.value.toLowerCase();
     setSearchValue(keyword);
+
     const filteredByName = dataSource.filter((row) => {
       const fullName = `${row.firstName} ${row.lastName}`.toLowerCase(); // Combine first and last name for filtering
       return fullName.includes(keyword);
     });
+
     const filteredByEmail = dataSource.filter((row) => {
       const email = row.email.toLowerCase();
       return email.includes(keyword);
     });
-    setUserData(filteredByName);  
-    setUserData(filteredByEmail); 
+
+    const filteredData =
+      filteredByName.length > 0 ? filteredByName : filteredByEmail;
+
+    setUserData(filteredData);
   };
-  
 
   const clearSearch = () => {
-    setSearchValue(""); // Clear search value state
-    setUserData(dataSource); // Reset data to original dataSource
+    setSearchValue("");
+    setUserData(dataSource);
   };
 
   return (
     <div>
-      <div className="text" style={{ width: "300px", float: "right", marginTop: "30px", position: "relative" }}>
+      <div
+        className="text"
+        style={{
+          width: "300px",
+          float: "right",
+          marginTop: "30px",
+          position: "relative",
+        }}
+      >
         <input
           type="text"
           className="form-control"
           name="search"
           id="search"
           placeholder="Search "
-          value={searchValue}  
+          value={searchValue}
           onChange={handleFilter}
         />
-        {searchValue && (  
+        {searchValue && (
           <MdClear
             onClick={clearSearch}
-            style={{ position: "absolute", top: "50%", right: "10px", transform: "translateY(-50%)", cursor: "pointer" }}
+            style={{
+              position: "absolute",
+              top: "50%",
+              right: "10px",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+            }}
           />
         )}
       </div>
