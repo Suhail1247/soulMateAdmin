@@ -110,7 +110,6 @@ export async function login(req, res) {
 export async function getUsers(req, res) {
   try {
     const users = await userModel.find({});
-    console.log("Users retrieved successfully:", users);
     res.status(200).json({
       error: false,
       message: "User details retrieved successfully",
@@ -193,8 +192,7 @@ export async function createPlan(req, res) {
       return res
         .status(201)
         .send({ error: false, msg: "Plan created successfully" });
-    } else if (!Type) {
-      const Type = "Premium";
+    } else if (Type=='Premium') {
       if (!Features) {
         return res.status(400).send({ error: "Features should not be empty" });
       } else if (!Price) {
@@ -204,7 +202,7 @@ export async function createPlan(req, res) {
       }
 
       const plan = new adminSubscription({
-        userId: user._id,
+        userId,
         Features,
         Price,
         Period,
@@ -227,12 +225,13 @@ export async function getPlan(req, res) {
   try {
     const userId = req.user.userid;
     if (userId) {
-      const plan = await adminSubscription.find({});
-    
+      const Normal = await adminSubscription.find({Type:'Normal'});
+      const Premium = await adminSubscription.find({Type:'Premium'});
       res.status(200).json({
         error: false,
         message: "Plans retrieved successfully",
-        data: plan,
+        Normal,
+        Premium
       });
     }
   } catch (error) {

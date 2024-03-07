@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from 'framer-motion';
-import { fetchPlan } from "../../../helper/helper";
+import { fetchNormalPlan } from "../../../helper/helper";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { deletePlan } from "../../../helper/helper";
 import { Modal, Button } from "react-bootstrap";
@@ -29,7 +29,7 @@ function NormalSubscritption() {
 
   const fetchData = async () => {
     try {
-      const fetchedPlan = await fetchPlan();
+      const fetchedPlan = await fetchNormalPlan();
       setPlan(fetchedPlan);
     } catch (error) {
       console.error("Error in Plan:", error);

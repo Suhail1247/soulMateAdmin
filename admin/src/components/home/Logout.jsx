@@ -19,23 +19,23 @@ const navigate=useNavigate()
 
   return (
     <React.Fragment>
-    
-      <Dialog
+        <Dialog
         open={props.open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-
+        PaperProps={{ style: { borderRadius: 10  ,width:'700px' } }} // Adjust size here
       >
-        
-        <DialogContent style={{margin:0,padding:0}}>
-        <div  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh' ,backgroundColor:'#B2BEB5', width: '100%' ,position:'relative'}}>
-        <Toaster/>
-        <p>Are you sure you want to logout?</p>
-        <button className="btn btn-danger w-25" onClick={logoutAction}>OK</button><br/>
-        <button className="btn btn-warning mt-3 w-25"  onClick={handleClose}>Cancel</button></div>
+        <DialogContent style={{ margin: 0, padding: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', backgroundColor: '#B2BEB5', width: '100%', position: 'relative', borderRadius: 10 }}>
+            <Toaster />
+            <p style={{ fontSize: 18, fontWeight: 'bold', color: '#fff' ,marginBottom: '30px' }}>Are you sure you want to logout?</p> 
+            <div>
+              <button className="btn btn-warning   "style={{ marginRight: 10 ,width:'100px'}} onClick={handleClose}>Cancel</button>
+              <button className="btn btn-danger " style={{ marginRight: 10 ,width:'100px' }} onClick={logoutAction}>Yes</button>  
+            </div>
+          </div>
         </DialogContent>
-        
       </Dialog>
     </React.Fragment>
   );

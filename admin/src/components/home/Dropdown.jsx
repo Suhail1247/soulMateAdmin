@@ -73,7 +73,7 @@ export default function MenuListComposition() {
     <>
     <Stack direction="row" spacing={2}>
     
-      <div>
+      <div style={{zIndex:'999'}}>
         <Button
           ref={anchorRef}
           id="composition-button"
@@ -111,7 +111,7 @@ export default function MenuListComposition() {
                   >
                     <MenuItem onClick={handleClose}>Profile</MenuItem>
                     <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={showLogout}>Logout</MenuItem>
+                    <MenuItem  onClick={showLogout}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

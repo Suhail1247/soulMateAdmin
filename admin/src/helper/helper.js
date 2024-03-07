@@ -61,6 +61,9 @@ export async function registerUser(credential) {
 
   export const createPlan=async (plan)=>{
     try {
+      console.log('====================================');
+      console.log(plan);
+      console.log('====================================');
       const token = await localStorage.getItem("token");
       const response = await axios.post("/api/createPlan",plan,{
         headers: {
@@ -74,7 +77,7 @@ export async function registerUser(credential) {
     }
   }
 
-  export const fetchPlan = async () => {
+  export const fetchNormalPlan = async () => {
     try {
       const token = await localStorage.getItem("token");
       const response = await axios.get("/api/getPlan", {
@@ -83,13 +86,28 @@ export async function registerUser(credential) {
         },
       });
 
-      return response.data.data;
+      return response.data.Normal;
     } catch (error) {
       console.error("Error fetching user data:", error);
       throw error;
     }
   };
+  export const  fetchPremiumPlan  = async () => {
+    try {
+      const token = await localStorage.getItem("token");
+      const response = await axios.get("/api/getPlan", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      return response.data.Premium;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      throw error;
+    }
+  };
+ 
   export const deletePlan = async (id) => {
     try {
       const token = await localStorage.getItem("token");

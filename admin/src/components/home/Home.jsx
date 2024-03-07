@@ -7,6 +7,7 @@ import Update from "./Update";
 import DeleteUser from "./DeleteUser";
 import ViewUser from "./ViewUser";
 import Navbar from "./Navbar";
+ 
 function home() {
   const navigate = useNavigate();
   const [logout, setLogout] = useState();
@@ -36,6 +37,8 @@ function home() {
   const cancelLogout = () => {
     setLogout(false);
   };
+  
+ 
 
   const showUpdate = () => {
     setUpdateUser(true);
@@ -72,10 +75,9 @@ function home() {
             {logout ? (
               <div className="popup">
                 <p>Are you sure you want to logout?</p>
-                <button className="btn btn-danger w-25" onClick={logoutAction}>
-                  OK
+                  <button className="btn btn-danger w-25" onClick={logoutAction}>
+                  Yes
                 </button>
-                <br />
                 <button
                   className="btn btn-warning mt-3 w-25"
                   onClick={cancelLogout}
@@ -83,6 +85,7 @@ function home() {
                   Cancel
                 </button>
               </div>
+              
             ) : (
               <UserManagement
                 showUpdate={showUpdate}
