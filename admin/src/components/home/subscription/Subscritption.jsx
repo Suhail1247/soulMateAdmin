@@ -6,7 +6,7 @@ import NormalSubscritption from "./NormalSubscritption";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
-import { fetchAdminData } from "../../../helper/helper";
+// import { fetchAdminData } from "../../../helper/helper";
 import Premium from "./Premium";
 function home() {
   const navigate = useNavigate();
