@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Modal, Button } from "react-bootstrap";
 import UserManagement from "./userManagement/UserManagement";
 import Sidebar from "./Sidebar";
 import Update from "./Update";
-import DeleteUser from "./DeleteUser";
+import { fetchUserData, submitDetails } from "../../helper/helper";
 import ViewUser from "./ViewUser";
 import Navbar from "./Navbar";
- 
-function home() {
-  const navigate = useNavigate();
-  const [logout, setLogout] = useState();
 
+function home() {
+  const [userData, setUserData] = useState({});
+  const navigate = useNavigate();
+  const [id, setId] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = await fetchUserData();
+        setUserData(userData);
+        console.log(userData);
+      } catch (error) {
+        console.error("Error in UserProfile:", error);
+      }
+    };
+    fetchData();
+  }, []);
   const [updateUser, setUpdateUser] = useState();
   const [viewUser, setViewUser] = useState();
   const [deleteUser, setDeleteUser] = useState();
@@ -30,15 +42,29 @@ function home() {
     }
   }, [token]);
 
-  const logoutAction = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
-  const cancelLogout = () => {
-    setLogout(false);
+  const done = () => {
+    setDeleteUser(false);
   };
   
- 
+  const blockUser = async () => {
+    try {
+      // Toggle the 'blocked' field in the userData object
+      const updatedUserData = { ...userData, blocked: !userData.blocked };
+      
+      // Submit the updated user data to the backend
+      await submitDetails(id, updatedUserData);
+  
+      // Update the userData state to reflect the changes
+      setUserData(updatedUserData);
+  
+      // Close the delete confirmation modal
+      setDeleteUser(false);
+    } catch (error) {
+      console.error("Error blocking user:", error);
+      // Handle error, if any
+    }
+  };
+  
 
   const showUpdate = () => {
     setUpdateUser(true);
@@ -46,8 +72,9 @@ function home() {
   const showView = () => {
     setViewUser(true);
   };
-  const showDelete = () => {
+  const showDelete = (row) => {
     setDeleteUser(true);
+    setId(row);
   };
 
   return (
@@ -71,28 +98,26 @@ function home() {
           >
             {updateUser && <Update />}
             {viewUser && <ViewUser />}
-            {deleteUser && <DeleteUser />}{" "}
-            {logout ? (
-              <div className="popup">
-                <p>Are you sure you want to logout?</p>
-                  <button className="btn btn-danger w-25" onClick={logoutAction}>
+
+            <Modal show={deleteUser} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Delete Confirmation</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>Are you sure you want to delete ?</Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={done}>
+                  No
+                </Button>
+                <Button variant="danger" onClick={blockUser}>
                   Yes
-                </button>
-                <button
-                  className="btn btn-warning mt-3 w-25"
-                  onClick={cancelLogout}
-                >
-                  Cancel
-                </button>
-              </div>
-              
-            ) : (
-              <UserManagement
-                showUpdate={showUpdate}
-                showView={showView}
-                showDelete={showDelete}
-              />
-            )}
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <UserManagement
+              showUpdate={showUpdate}
+              showView={showView}
+              showDelete={showDelete}
+            />
           </div>
         </div>
       </div>

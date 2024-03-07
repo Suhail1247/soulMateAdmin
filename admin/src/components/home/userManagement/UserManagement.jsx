@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { fetchUserData } from "../../../helper/helper";
 import { CiViewList } from "react-icons/ci";
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin2Fill } from "react-icons/ri";
 import { MdClear } from "react-icons/md"; // Import clear icon
 import DataTable from "react-data-table-component";
-
+import { ImBlocked } from "react-icons/im";
 function UserManagement(props) {
   const [userData, setUserData] = useState([]);
 
@@ -33,9 +32,11 @@ function UserManagement(props) {
     props.showView(row); // Pass row data to showView function
   };
 
-  const deleteUser = (row) => {
-    props.showDelete(row); // Pass row data to showDelete function
+  const blockUser = (row) => {
+
+    props.showDelete(row); 
   };
+
 
   const columns = [
     {
@@ -70,6 +71,16 @@ function UserManagement(props) {
       sortable: true,
     },
     {
+      name: "Status",
+      selector: (row) => {
+        if( row.blocked){
+          return 'inactive';
+        }
+     return 'Active'
+      },
+      sortable: true,
+    },
+    {
       name: "Actions",
       cell: (row) => (
         <div>
@@ -81,8 +92,8 @@ function UserManagement(props) {
             onClick={() => update(row)}
             style={{ cursor: "pointer", color: "blue", marginRight: "20px" }}
           />
-          <RiDeleteBin2Fill
-            onClick={() => deleteUser(row)}
+          <ImBlocked
+            onClick={() => blockUser(row._id)}
             style={{ cursor: "pointer", color: "red" }}
           />
         </div>
@@ -107,12 +118,11 @@ function UserManagement(props) {
 
     const filteredData =
       filteredByName.length > 0 ? filteredByName : filteredByEmail;
-
     setUserData(filteredData);
   };
 
   const clearSearch = () => {
-    setSearchValue("");
+    setSearchValue(""); 
     setUserData(dataSource);
   };
 

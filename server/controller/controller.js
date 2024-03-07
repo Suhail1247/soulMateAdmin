@@ -28,11 +28,9 @@ export async function register(req, res) {
 
     if (password) {
       if (!specialchar.test(password)) {
-        return res
-          .status(400)
-          .send({
-            error: "Password should contain atleaset one special charector",
-          });
+        return res.status(400).send({
+          error: "Password should contain atleaset one special charector",
+        });
       } else if (password.length < 6) {
         return res
           .status(400)
@@ -192,7 +190,7 @@ export async function createPlan(req, res) {
       return res
         .status(201)
         .send({ error: false, msg: "Plan created successfully" });
-    } else if (Type=='Premium') {
+    } else if (Type == "Premium") {
       if (!Features) {
         return res.status(400).send({ error: "Features should not be empty" });
       } else if (!Price) {
@@ -225,13 +223,13 @@ export async function getPlan(req, res) {
   try {
     const userId = req.user.userid;
     if (userId) {
-      const Normal = await adminSubscription.find({Type:'Normal'});
-      const Premium = await adminSubscription.find({Type:'Premium'});
+      const Normal = await adminSubscription.find({ Type: "Normal" });
+      const Premium = await adminSubscription.find({ Type: "Premium" });
       res.status(200).json({
         error: false,
         message: "Plans retrieved successfully",
         Normal,
-        Premium
+        Premium,
       });
     }
   } catch (error) {
@@ -247,9 +245,9 @@ export async function getPlan(req, res) {
 export async function deletePlan(req, res) {
   try {
     const userId = req.user.userid;
-    
+
     if (userId) {
-      const id = req.params.id;  
+      const id = req.params.id;
       await adminSubscription.findByIdAndDelete(id);
 
       res.status(200).json({
@@ -265,5 +263,36 @@ export async function deletePlan(req, res) {
       message: error.message,
       data: null,
     });
+  }
+}
+export async function submitDetails(req, res) {
+  try {
+    const userId = req.params.userId;
+    const existingUser = await userModel.findOne({ _id: userId });
+
+    if (!existingUser) {
+      console.log("user not found");
+      res
+        .status(404)
+        .json({ message: "User not found", data: null, error: true });
+    } else {
+      const updatedUser = await userModel.findOneAndUpdate(
+        { _id: userId },
+        { ...req.body },
+        { new: true }
+      );
+
+      res.status(200).json({
+        message: "Record updated",
+        data: updatedUser,
+        error: false,
+      });
+      console.log(existingUser.blocked,existingUser._id);
+    }
+  } catch (error) {
+    console.error("Error during user update:", error);
+    res
+      .status(500)
+      .send({ message: `Internal Server Error ${error}`, error: true });
   }
 }
