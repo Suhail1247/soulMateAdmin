@@ -9,124 +9,120 @@ import ViewUser from "./ViewUser";
 import Navbar from "./Navbar";
 
 function home() {
-    const [userData, setUserData] = useState({});
-    const navigate = useNavigate();
-    const [id, setId] = useState();
+  const [userData, setUserData] = useState({});
+  const navigate = useNavigate();
+  const [id, setId] = useState();
 
-    useEffect(() => {
-        const fetchData = async() => {
-            try {
-                const userData = await fetchUserData();
-                setUserData(userData);
-                console.log(userData);
-            } catch (error) {
-                console.error("Error in UserProfile:", error);
-            }
-        };
-        fetchData();
-    }, []);
-    const [updateUser, setUpdateUser] = useState();
-    const [viewUser, setViewUser] = useState();
-    const [deleteUser, setDeleteUser] = useState();
-    const token = localStorage.getItem("token");
-    useEffect(() => {
-        if (!token) {
-            navigate("/");
-        } else if (token) {
-            const tokenData = JSON.parse(atob(token.split(".")[1]));
-            const expirationTime = tokenData.exp * 1000;
-
-            if (Date.now() >= expirationTime) {
-                console.log("Token expired. Removing token.");
-                localStorage.removeItem("token");
-            }
-        }
-    }, [token]);
-
-    const done = () => {
-        setDeleteUser(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = await fetchUserData();
+        setUserData(userData);
+        console.log(userData);
+      } catch (error) {
+        console.error("Error in UserProfile:", error);
+      }
     };
+    fetchData();
+  }, []);
+  const [updateUser, setUpdateUser] = useState();
+  const [viewUser, setViewUser] = useState();
+  const [deleteUser, setDeleteUser] = useState();
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+    } else if (token) {
+      const tokenData = JSON.parse(atob(token.split(".")[1]));
+      const expirationTime = tokenData.exp * 1000;
 
-    const blockUser = async() => {
-        try {
-            const updatedUserData = {...userData, blocked: !userData.blocked };
+      if (Date.now() >= expirationTime) {
+        console.log("Token expired. Removing token.");
+        localStorage.removeItem("token");
+      }
+    }
+  }, [token]);
 
-            await submitDetails(id, updatedUserData);
+  const done = () => {
+    setDeleteUser(false);
+  };
 
-            setUserData(updatedUserData);
+const blockUser = async () => {
+  try {
+    // Create a copy of the user data
+    const updatedUserData = [...userData];
 
-            // Close the delete confirmation modal
-            setDeleteUser(false);
-        } catch (error) {
-            console.error("Error blocking user:", error);
-            // Handle error, if any
-        }
-    };
+    // Find the user by ID in the copied array
+    const userIndex = updatedUserData.findIndex((user) => user._id === id);
 
-    const showUpdate = () => {
-        setUpdateUser(true);
-    };
-    const showView = () => {
-        setViewUser(true);
-    };
-    const showDelete = (row) => {
-        setDeleteUser(true);
-        setId(row);
-    };
-    return ( <
-        >
-        <
-        div className = "container-fluid "
-        style = {
-            {
-                height: "100vh",
-                backgroundColor: "#36454F",
-                overflow: "hidden",
-            }
-        } >
-        <
-        div className = " row  " >
-        <
-        Navbar / >
-        <
-        div className = "col-2 p-4 text-white" >
-        <
-        Sidebar / >
-        <
-        /div>{" "} <
-        div className = "col-10 "
-        style = {
-            { backgroundColor: "#D3D3D3", height: "90vh" } } >
-        { updateUser && < Update / > } { viewUser && < ViewUser / > } { " " } <
-        Modal show = { deleteUser }
-        centered >
-        <
-        Modal.Header closeButton >
-        <
-        Modal.Title > Delete Confirmation < /Modal.Title>{" "} <
-        /Modal.Header>{" "} <
-        Modal.Body > Are you sure you want to delete ? < /Modal.Body>{" "} <
-        Modal.Footer >
-        <
-        Button variant = "secondary"
-        onClick = { done } >
-        No { " " } <
-        /Button>{" "} <
-        Button variant = "danger"
-        onClick = { blockUser } >
-        Yes { " " } <
-        /Button>{" "} <
-        /Modal.Footer>{" "} <
-        /Modal>{" "} <
-        UserManagement showUpdate = { showUpdate }
-        showView = { showView }
-        showDelete = { showDelete }
-        />{" "} <
-        /div>{" "} <
-        /div>{" "} <
-        /div>{" "} <
-        />
-    );
+    updatedUserData[userIndex].blocked = !updatedUserData[userIndex].blocked;
+
+    setUserData(updatedUserData);
+
+    await submitDetails(id, updatedUserData[userIndex]);
+
+    window.location.reload();
+  } catch (error) {
+    console.error("Error blocking user:", error);
+    // Handle error, if any
+  }
+};
+
+
+  const showUpdate = () => {
+    setUpdateUser(true);
+  };
+  const showView = () => {
+    setViewUser(true);
+  };
+  const showDelete = (row) => {
+    setDeleteUser(true);
+    setId(row);
+  };
+  return (
+    <>
+      <div
+        className="container-fluid "
+        style={{
+          height: "100vh",
+          backgroundColor: "#36454F",
+          overflow: "hidden",
+        }}
+      >
+        <div className=" row  ">
+          <Navbar />
+          <div className="col-2 p-4 text-white">
+            <Sidebar />
+          </div>{" "}
+          <div
+            className="col-10 "
+            style={{ backgroundColor: "#D3D3D3", height: "90vh" }}
+          >
+            {updateUser && <Update />} {viewUser && <ViewUser />}{" "}
+            <Modal show={deleteUser} centered>
+              <Modal.Header closeButton>
+                <Modal.Title> Delete Confirmation </Modal.Title>{" "}
+              </Modal.Header>{" "}
+              <Modal.Body> Are you sure you want to delete ? </Modal.Body>{" "}
+              <Modal.Footer>
+                <Button variant="secondary" onClick={done}>
+                  No{" "}
+                </Button>{" "}
+                <Button variant="danger" onClick={blockUser}>
+                  Yes{" "}
+                </Button>{" "}
+              </Modal.Footer>{" "}
+            </Modal>{" "}
+            <UserManagement
+              showUpdate={showUpdate}
+              showView={showView}
+              showDelete={showDelete}
+            />{" "}
+          </div>{" "}
+        </div>{" "}
+      </div>{" "}
+    </>
+  );
 }
 
 export default home;

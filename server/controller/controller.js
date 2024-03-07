@@ -107,11 +107,14 @@ export async function login(req, res) {
 
 export async function getUsers(req, res) {
   try {
-    const users = await userModel.find({});
+    const users = await userModel.find({ firstName: { $ne: null }, lastName: { $ne: null } });
+    const pending = await userModel.find({ firstName: null, lastName: null });
+
     res.status(200).json({
       error: false,
       message: "User details retrieved successfully",
-      data: users,
+     users,
+     pending
     });
   } catch (error) {
     console.error("Error retrieving users:", error);

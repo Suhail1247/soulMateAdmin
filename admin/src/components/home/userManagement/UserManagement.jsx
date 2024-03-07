@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchUserData } from "../../../helper/helper";
+import { fetchPendingData, fetchUserData } from "../../../helper/helper";
 import { CiSearch, CiViewList } from "react-icons/ci";
 import { FaRegEdit } from "react-icons/fa";
 import { MdClear } from "react-icons/md"; // Import clear icon
@@ -8,6 +8,7 @@ import { ImBlocked } from "react-icons/im";
 import { Tab, Tabs } from "@mui/material"; // Import Tabs and Tab components from MUI
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import { CgUnblock } from "react-icons/cg";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -31,8 +32,10 @@ function CustomTabPanel(props) {
 
 function UserManagement(props) {
   const [userData, setUserData] = useState([]);
+  const [pendingData, setPendingData] = useState([]);
   const [value, setValue] = useState(0); // Initialize value state to 0 for the first tab
   const [dataSource, setDataSource] = useState([]);
+  const [pendingSource, setPendingSource] = useState([]);
   const [searchValue, setSearchValue] = useState(""); // State for search value
 
   useEffect(() => {
@@ -40,7 +43,10 @@ function UserManagement(props) {
       try {
         const fetchedUserData = await fetchUserData();
         setUserData(fetchedUserData);
-        setDataSource(fetchedUserData); // Set dataSource as well
+        setDataSource(fetchedUserData);
+        const fetchedPendigData = await fetchPendingData();
+        setPendingData(fetchedPendigData);
+        setPendingSource(fetchedPendigData);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -98,7 +104,9 @@ function UserManagement(props) {
         if (row.blocked) {
           return "inactive";
         }
+        else{
         return "Active";
+        }
       },
       sortable: true,
     },
@@ -113,11 +121,22 @@ function UserManagement(props) {
           <FaRegEdit
             onClick={() => update(row)}
             style={{ cursor: "pointer", color: "blue", marginRight: "20px" }}
-          />
-          <ImBlocked
+          />{row.blocked?
+            <CgUnblock 
             onClick={() => blockUser(row._id)}
-            style={{ cursor: "pointer", color: "red" }}
-          />
+            style={{ cursor: "pointer", color: "gray" }} 
+            title="Unblock User" 
+            />
+         
+            :
+            <ImBlocked
+            onClick={() => blockUser(row._id)}
+            style={{ cursor: "pointer", color: "red" }} 
+            title="Block User" 
+            />
+            
+          }
+        
         </div>
       ),
       sortable: false,
@@ -243,7 +262,7 @@ function UserManagement(props) {
         <DataTable
           title="Pending Users"
           columns={columns}
-          data={userData}
+          data={pendingData}
           fixedHeader
           selectableRows
           pagination
