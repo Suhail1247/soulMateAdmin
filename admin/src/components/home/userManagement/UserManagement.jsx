@@ -1,14 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { fetchUserData } from "../../../helper/helper";
-import { CiViewList } from "react-icons/ci";
+import { CiSearch, CiViewList } from "react-icons/ci";
 import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBin2Fill } from "react-icons/ri";
 import { MdClear } from "react-icons/md"; // Import clear icon
 import DataTable from "react-data-table-component";
+import { ImBlocked } from "react-icons/im";
+import { Tab, Tabs } from "@mui/material"; // Import Tabs and Tab components from MUI
+import { Box } from "@mui/material";
+import Typography from "@mui/material/Typography";
+
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 function UserManagement(props) {
   const [userData, setUserData] = useState([]);
-
+  const [value, setValue] = useState(0); // Initialize value state to 0 for the first tab
   const [dataSource, setDataSource] = useState([]);
   const [searchValue, setSearchValue] = useState(""); // State for search value
 
@@ -33,8 +56,8 @@ function UserManagement(props) {
     props.showView(row); // Pass row data to showView function
   };
 
-  const deleteUser = (row) => {
-    props.showDelete(row); // Pass row data to showDelete function
+  const blockUser = (row) => {
+    props.showDelete(row);
   };
 
   const columns = [
@@ -70,6 +93,16 @@ function UserManagement(props) {
       sortable: true,
     },
     {
+      name: "Status",
+      selector: (row) => {
+        if (row.blocked) {
+          return "inactive";
+        }
+        return "Active";
+      },
+      sortable: true,
+    },
+    {
       name: "Actions",
       cell: (row) => (
         <div>
@@ -81,8 +114,8 @@ function UserManagement(props) {
             onClick={() => update(row)}
             style={{ cursor: "pointer", color: "blue", marginRight: "20px" }}
           />
-          <RiDeleteBin2Fill
-            onClick={() => deleteUser(row)}
+          <ImBlocked
+            onClick={() => blockUser(row._id)}
             style={{ cursor: "pointer", color: "red" }}
           />
         </div>
@@ -107,7 +140,6 @@ function UserManagement(props) {
 
     const filteredData =
       filteredByName.length > 0 ? filteredByName : filteredByEmail;
-
     setUserData(filteredData);
   };
 
@@ -116,48 +148,108 @@ function UserManagement(props) {
     setUserData(dataSource);
   };
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue); // Update the value state when tab changes
+  };
+
   return (
     <div>
-      <div
-        className="text"
-        style={{
-          width: "300px",
-          float: "right",
-          marginTop: "30px",
-          position: "relative",
-        }}
-      >
-        <input
-          type="text"
-          className="form-control"
-          name="search"
-          id="search"
-          placeholder="Search "
-          value={searchValue}
-          onChange={handleFilter}
-        />
-        {searchValue && (
-          <MdClear
-            onClick={clearSearch}
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-            }}
+      <Box sx={{ borderBottom: 0, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          textColor="secondary"
+          indicatorColor="secondary"
+          aria-label="secondary tabs example"
+        >
+          <Tab label="User" />
+          <Tab label="Pending User" />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <div
+          className="text"
+          style={{
+            width: "300px",
+            float: "right",
+            marginTop: "-43px",
+            position: "relative",
+          }}
+        >
+          <input
+            type="text"
+            className="form-control"
+            name="search"
+            id="search"
+            placeholder="Search "
+            value={searchValue}
+            onChange={handleFilter}
           />
-        )}
-      </div>
-      <DataTable
-        title="Users"
-        columns={columns}
-        data={userData}
-        fixedHeader
-        selectableRows
-        pagination
-        highlightOnHover
-      />
+          {searchValue && (
+            <MdClear
+              onClick={clearSearch}
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "10px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+              }}
+            />
+          )}
+        </div>
+        <DataTable
+          title="Users"
+          columns={columns}
+          data={userData}
+          fixedHeader
+          selectableRows
+          pagination
+          highlightOnHover
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <div
+          className="text"
+          style={{
+            width: "300px",
+            float: "right",
+            marginTop: "-43px",
+            position: "relative",
+          }}
+        >
+          <input
+            type="text"
+            className="form-control"
+            name="search"
+            id="search"
+            placeholder="Search "
+            value={searchValue}
+            onChange={handleFilter}
+          />
+          {searchValue && (
+            <MdClear
+              onClick={clearSearch}
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "10px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+              }}
+            />
+          )}
+        </div>
+        <DataTable
+          title="Pending Users"
+          columns={columns}
+          data={userData}
+          fixedHeader
+          selectableRows
+          pagination
+          highlightOnHover
+        />
+      </CustomTabPanel>
     </div>
   );
 }

@@ -124,3 +124,17 @@ export async function registerUser(credential) {
     }
   };
   
+  export async function submitDetails(userId,response) {
+    try {
+      const token = await localStorage.getItem("token");
+      const { data} = await axios.post(`/api/submitDetails/${userId}`, response, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      return data;
+  
+    } catch (error) {
+      console.error("Error on Submit:", error);
+      return Promise.reject({ error: "Couldn't Submit" });
+    }
+  }

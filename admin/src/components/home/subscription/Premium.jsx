@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { fetchPremiumPlan } from "../../../helper/helper";
 import { deletePlan } from "../../../helper/helper";
 import { Modal, Button } from "react-bootstrap";
-import toast, { Toaster } from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import toast, { Toaster } from "react-hot-toast";
+import { motion } from "framer-motion";
 import AddPremium from "./AddPremium";
 
 function Premium() {
@@ -48,8 +48,7 @@ function Premium() {
   };
 
   const handleClose = () => {
-    setDltBox(false);
-    setSelectedItemId(null);
+    props.done();
   };
 
   useEffect(() => {
@@ -63,8 +62,12 @@ function Premium() {
         <div className="row">
           <div className="col-12 d-flex justify-content-end">
             <motion.button
-              whileHover={{ scale: 1.1, backgroundColor: 'white', color: 'black' }}
-              style={{ backgroundColor: '#2c3e50', color: '#ecf0f1' }}
+              whileHover={{
+                scale: 1.1,
+                backgroundColor: "white",
+                color: "black",
+              }}
+              style={{ backgroundColor: "#2c3e50", color: "#ecf0f1" }}
               transition={{ duration: 0.3 }}
               className="p-2 link rounded"
               onClick={create}
@@ -72,23 +75,39 @@ function Premium() {
               Create a Plan
             </motion.button>
           </div>
-          <div className="col-12 mt-2" style={{ overflowX: 'auto', height: 'auto' }}>
+          <div
+            className="col-12 mt-2"
+            style={{ overflowX: "auto", height: "auto" }}
+          >
             <div className="d-flex flex-wrap">
               {plan.map((item, index) => (
-                <div key={item._id} className="card mt-2 ms-2" style={{ width: '30%', backgroundColor: '#B2BEB5' }}>
+                <div
+                  key={item._id}
+                  className="card mt-2 ms-2"
+                  style={{ width: "30%", backgroundColor: "#B2BEB5" }}
+                >
                   <div className="card-body">
                     <p>Plan {index + 1}</p>
                     <h5 className="card-title">features</h5>
                     <p className="card-text">{item.Features}</p>
-                    <p className="card-text">Price: {item.Price} / {item.Period}</p>
+                    <p className="card-text">
+                      Price: {item.Price} / {item.Period}
+                    </p>
                     <div>
                       {item.Features.map((feature, index) => (
-                        <div key={index} className="" style={{ marginBottom: '10px' }}>
+                        <div
+                          key={index}
+                          className=""
+                          style={{ marginBottom: "10px" }}
+                        >
                           {feature.limit}
                         </div>
                       ))}
                     </div>
-                    <button className="btn btn-danger" onClick={() => deleteCPlan(item._id)}>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => deleteCPlan(item._id)}
+                    >
                       Delete
                     </button>
                   </div>

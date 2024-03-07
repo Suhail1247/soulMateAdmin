@@ -102,6 +102,9 @@ export const userSchema=new mongoose.Schema({
     photoUpload:{
         type:[String]
     },
-
+    blocked: {
+        type: Boolean,
+        default: false,
+      },
 })
     export default mongoose.model('userModels',userSchema) 
