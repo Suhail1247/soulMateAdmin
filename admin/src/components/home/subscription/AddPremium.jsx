@@ -9,10 +9,8 @@ export default function AddPremium(props) {
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [plans, setPlans] = React.useState([]);
   const [error, setError] = React.useState('');
-  const [price, setPrice] = React.useState(20);
+  const [price, setPrice] = React.useState();
   const [selectedPeriod, setSelectedPeriod] = React.useState('monthly');
-
-  // ... (previous code)
 
   const handlePeriodChange = (event) => {
     setSelectedPeriod(event.target.value);
@@ -24,24 +22,24 @@ export default function AddPremium(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const NoOfBoost = event.target.querySelector('#noOfBoost').value;
+    const Features = localStorage.getItem('planData')
     const Period = event.target.querySelector('#selectPeriod').value;
     const Price = event.target.querySelector('#price').value;
-    const Type = 'Normal';
 
-    // Validation: Check if any of the required fields are empty
-    if (!NoOfBoost || !Period || !Price) {
-      setError('All fields are required');
+
+
+    if (!Features || !Period || !Price) {
+      toast.error('All fields are required');
       return;
     }
 
-    setError('');
+  
 
     const planData = {
-      NoOfBoost,
+      Features,
       Period,
       Price,
-      Type,
+      Type: 'Premium',
     };
 
     try {
@@ -51,9 +49,9 @@ export default function AddPremium(props) {
       });
       setTimeout(() => {
         props.done();
+        localStorage.removeItem('planData')
       }, 2000);
     } catch (error) {
-      console.log(error);
       toast.error(<b>{error.response?.data.error || 'Something went wrong'}</b>);
     }
   };
@@ -65,14 +63,24 @@ export default function AddPremium(props) {
   React.useEffect(() => {
     const storedPlans = JSON.parse(localStorage.getItem('planData')) || [];
     setPlans(storedPlans);
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, [plans]);
+
+  const handleBeforeUnload = () => {
+    localStorage.removeItem('planData');
+  };
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    props.done(false);
   };
 
   const storeToLocal = (event) => {
@@ -81,44 +89,31 @@ export default function AddPremium(props) {
     const titleInput = event.target.querySelector('input[placeholder="Title"]');
     const limitInput = event.target.querySelector('input[placeholder="Limit"]');
 
-    // Validation: Check if all input fields are empty
     if (!titleInput.value || !limitInput.value || !selectedFile) {
-      setError('All fields are required');
+      toast.error('All fields are required');
       return;
     }
 
-    setError('');
 
-    // Get existing data from localStorage
+
     const existingData = JSON.parse(localStorage.getItem('planData')) || [];
-
-    // Create a new plan object with the image path
     const newPlan = {
       title: titleInput.value,
-      icon: URL.createObjectURL(selectedFile), // Capture the path of the selected icon image
+      icon: URL.createObjectURL(selectedFile),
       limit: limitInput.value,
     };
 
-    // Store only the new plan data in localStorage
     localStorage.setItem('planData', JSON.stringify([...existingData, newPlan]));
 
-    // Clear the form fields and reset selectedFile
     titleInput.value = '';
     limitInput.value = '';
     setSelectedFile(null);
   };
 
   const deleteFeature = (index) => {
-    // Get existing data from localStorage
     const existingData = JSON.parse(localStorage.getItem('planData')) || [];
-
-    // Remove the item at the specified index
     existingData.splice(index, 1);
-
-    // Update localStorage with the modified data
     localStorage.setItem('planData', JSON.stringify(existingData));
-
-    // Update state to reflect the changes
     setPlans([...existingData]);
   };
 
@@ -163,8 +158,7 @@ export default function AddPremium(props) {
                 textAlign: 'center',
                 width: '100%',
                 fontSize: '20px',
-                borderBottom: 'solid black 1px',
-                marginBottom: '10px',
+                borderBottom: 'solid black 1px'
               }}
             >
               <p>create a plan</p>
@@ -178,31 +172,8 @@ export default function AddPremium(props) {
                 style={{ marginBottom: '20px', width: '100%' }}
                 onSubmit={storeToLocal}
               >
-                <div className='d-flex justify-content-center mt-4'>
-                  <label htmlFor="selectPeriod">Select Period :</label>
-                  <select
-                    id="selectPeriod"
-                    name="selectPeriod"
-                    style={{ marginLeft: '1%', width: '25%', height: '5vh' }}
-                    onChange={handlePeriodChange}
-                  >
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                    <option value="weekly">Weekly</option>
-                  </select>
-                  <label htmlFor="price" className='ps-3'>
-                    Price (in $) :
-                  </label>
-                  <input
-                    className='ms-1'
-                    type="text"
-                    id="price"
-                    name="price"
-                    style={{ width: '25%', height: '5vh' }}
-                    onChange={handlePriceChange}
-                  />
-                </div>
-                <div className="mt-3" style={{ alignSelf: 'flex-start' }}>
+                
+                <div  style={{ alignSelf: 'flex-start' }}>
                   Features
                 </div>
                 <div className="mt-2 d-flex justify-content-center">
@@ -240,10 +211,33 @@ export default function AddPremium(props) {
               </form>
             </div>
             <div className="w-75 mb-2" style={{ backgroundColor: '#D3D3D3' }}>
-              <form className='mt-1 mb-2 text-center' onClick={handleSubmit}>
-              <h6 className="mt-1 pb-2" style={{ borderBottom: 'solid 1px' }}>
-                Soulmate Premium <span>price :</span> {price} / {selectedPeriod}
-              </h6>                <table style={{ width: '100%' }}>
+              <form className='mt-1 mb-2 text-center' onSubmit={handleSubmit}>
+                <div className='d-flex justify-content-center mt-4 pb-2'style={{borderBottom:'solid gray 1px'}}>
+                  <label htmlFor="selectPeriod">Select Period :</label>
+                  <select
+                    id="selectPeriod"
+                    name="selectPeriod"
+                    style={{ marginLeft: '1%', width: '25%', height: '5vh' }}
+                    onChange={handlePeriodChange}
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                    <option value="weekly">Weekly</option>
+                  </select>
+                  <label htmlFor="price" className='ps-3'>
+                    Price (in $) :
+                  </label>
+                  <input
+                    className='ms-1'
+                    type="text"
+                    id="price"
+                    name="price"
+                    value={price}
+                    style={{ width: '25%', height: '5vh' }}
+                    onChange={handlePriceChange}
+                  />
+                </div>
+                <table style={{ width: '100%' }}>
                   <tbody>
                     {plans.map((plan, index) => (
                       <tr key={index}>
@@ -269,7 +263,7 @@ export default function AddPremium(props) {
                 </button>
               </form>
             </div>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+         
           </div>
         </DialogContent>
       </Dialog>

@@ -44,13 +44,23 @@ function home() {
             className="col-10 "
             style={{ backgroundColor: "#D3D3D3", height: "90vh" }}
           >
-            <Box className="ms-5" sx={{ width: "90%" }}>
+            {/* <Box className="ms-5" sx={{ width: "90%" }}>
               <Tabs
                 value={value}
                 onChange={handleChange}
                 textColor="secondary"
                 indicatorColor="secondary"
                 aria-label="secondary tabs example"
+              >
+                <Tab value="one" label="Normal" />
+                <Tab value="two" label="Premium" />
+              </Tabs>
+            </Box> */}
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
               >
                 <Tab value="one" label="Normal" />
                 <Tab value="two" label="Premium" />

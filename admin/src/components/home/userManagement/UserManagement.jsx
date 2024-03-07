@@ -92,13 +92,19 @@ function UserManagement(props) {
 
   const handleFilter = (event) => {
     const keyword = event.target.value.toLowerCase();
-    setSearchValue(keyword); // Update search value state
-    const filtered = dataSource.filter((row) => {
+    setSearchValue(keyword);
+    const filteredByName = dataSource.filter((row) => {
       const fullName = `${row.firstName} ${row.lastName}`.toLowerCase(); // Combine first and last name for filtering
       return fullName.includes(keyword);
     });
-    setUserData(filtered);
+    const filteredByEmail = dataSource.filter((row) => {
+      const email = row.email.toLowerCase();
+      return email.includes(keyword);
+    });
+    setUserData(filteredByName);  
+    setUserData(filteredByEmail); 
   };
+  
 
   const clearSearch = () => {
     setSearchValue(""); // Clear search value state
@@ -113,7 +119,7 @@ function UserManagement(props) {
           className="form-control"
           name="search"
           id="search"
-          placeholder="Search"
+          placeholder="Search "
           value={searchValue}  
           onChange={handleFilter}
         />

@@ -38,7 +38,7 @@ function home() {
     setLogout(false);
   };
   
-  //  logout
+ 
 
   const showUpdate = () => {
     setUpdateUser(true);
@@ -75,10 +75,9 @@ function home() {
             {logout ? (
               <div className="popup">
                 <p>Are you sure you want to logout?</p>
-                <button className="btn btn-danger w-25" onClick={logoutAction}>
+                  <button className="btn btn-danger w-25" onClick={logoutAction}>
                   Yes
                 </button>
-                <br />
                 <button
                   className="btn btn-warning mt-3 w-25"
                   onClick={cancelLogout}
@@ -86,6 +85,7 @@ function home() {
                   Cancel
                 </button>
               </div>
+              
             ) : (
               <UserManagement
                 showUpdate={showUpdate}

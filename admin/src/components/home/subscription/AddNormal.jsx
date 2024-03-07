@@ -39,7 +39,7 @@ export default function AddNormal(props) {
 
 
   const handleClose = () => {
-    setOpen(false);
+    props.done(false)
   };
 
   return (
