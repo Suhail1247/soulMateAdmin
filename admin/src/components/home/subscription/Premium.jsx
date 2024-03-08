@@ -53,7 +53,7 @@ function Premium() {
 
   useEffect(() => {
     fetchData();
-  }, [add, plan]);
+  }, []);
 
   return (
     <>
@@ -88,19 +88,19 @@ function Premium() {
                 >
                   <div className="card-body">
                     <p>Plan {index + 1}</p>
-                    <h5 className="card-title">features</h5>
-                    <p className="card-text">{item.Features}</p>
                     <p className="card-text">
                       Price: {item.Price} / {item.Period}
                     </p>
+                    <h5 className="card-title">features</h5>
                     <div>
                       {item.Features.map((feature, index) => (
                         <div
                           key={index}
-                          className=""
+                           className=""
                           style={{ marginBottom: "10px" }}
-                        >
-                          {feature.limit}
+                        ><span className="me-5">limit:{feature.limit}</span>
+                          
+                          title:{feature.title}
                         </div>
                       ))}
                     </div>

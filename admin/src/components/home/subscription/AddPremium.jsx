@@ -6,11 +6,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import { RiDeleteBin2Fill } from 'react-icons/ri';
 
 export default function AddPremium(props) {
+  const [formData, setFormData] = React.useState(new FormData());
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [plans, setPlans] = React.useState([]);
-  const [error, setError] = React.useState('');
-  const [price, setPrice] = React.useState();
+  const [price, setPrice] = React.useState('');
   const [selectedPeriod, setSelectedPeriod] = React.useState('monthly');
+  const [title, setTitle] = React.useState('');
+  const [limit, setLimit] = React.useState('');
 
   const handlePeriodChange = (event) => {
     setSelectedPeriod(event.target.value);
@@ -20,20 +22,29 @@ export default function AddPremium(props) {
     setPrice(event.target.value);
   };
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleLimitChange = (event) => {
+    setLimit(event.target.value);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const Features = localStorage.getItem('planData')
-    const Period = event.target.querySelector('#selectPeriod').value;
-    const Price = event.target.querySelector('#price').value;
 
+    const Features = plans.map((plan) => ({
+      title: plan.title,
+      icon: plan.icon,
+      limit: plan.limit,
+    }));
+    const Period = selectedPeriod;
+    const Price = price;
 
-
-    if (!Features || !Period || !Price) {
+    if (!Features.length || !Period || !Price) {
       toast.error('All fields are required');
       return;
     }
-
-  
 
     const planData = {
       Features,
@@ -49,7 +60,9 @@ export default function AddPremium(props) {
       });
       setTimeout(() => {
         props.done();
-        localStorage.removeItem('planData')
+        setPlans([]);
+        setPrice('');
+        setSelectedPeriod('monthly');
       }, 2000);
     } catch (error) {
       toast.error(<b>{error.response?.data.error || 'Something went wrong'}</b>);
@@ -58,21 +71,6 @@ export default function AddPremium(props) {
 
   const handleBack = () => {
     props.done(false);
-  };
-
-  React.useEffect(() => {
-    const storedPlans = JSON.parse(localStorage.getItem('planData')) || [];
-    setPlans(storedPlans);
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [plans]);
-
-  const handleBeforeUnload = () => {
-    localStorage.removeItem('planData');
   };
 
   const handleFileChange = (event) => {
@@ -86,35 +84,28 @@ export default function AddPremium(props) {
   const storeToLocal = (event) => {
     event.preventDefault();
 
-    const titleInput = event.target.querySelector('input[placeholder="Title"]');
-    const limitInput = event.target.querySelector('input[placeholder="Limit"]');
-
-    if (!titleInput.value || !limitInput.value || !selectedFile) {
+    if (!title || !limit || !selectedFile) {
       toast.error('All fields are required');
       return;
     }
 
-
-
-    const existingData = JSON.parse(localStorage.getItem('planData')) || [];
     const newPlan = {
-      title: titleInput.value,
+      title,
       icon: URL.createObjectURL(selectedFile),
-      limit: limitInput.value,
+      limit,
     };
 
-    localStorage.setItem('planData', JSON.stringify([...existingData, newPlan]));
+    setPlans([...plans, newPlan]);
 
-    titleInput.value = '';
-    limitInput.value = '';
+    setTitle('');
+    setLimit('');
     setSelectedFile(null);
   };
 
   const deleteFeature = (index) => {
-    const existingData = JSON.parse(localStorage.getItem('planData')) || [];
-    existingData.splice(index, 1);
-    localStorage.setItem('planData', JSON.stringify(existingData));
-    setPlans([...existingData]);
+    const updatedPlans = [...plans];
+    updatedPlans.splice(index, 1);
+    setPlans(updatedPlans);
   };
 
   return (
@@ -181,6 +172,8 @@ export default function AddPremium(props) {
                     type='text'
                     placeholder='Title'
                     style={{ width: '25%', height: '5vh' }}
+                    value={title}
+                    onChange={handleTitleChange}
                   />
                   <label htmlFor="file" className='ms-2 ' style={{ cursor: 'pointer' }}>
                     <div style={{ border: '1px solid #ccc', display: 'flex', alignItems: 'center' }}>
@@ -205,6 +198,8 @@ export default function AddPremium(props) {
                     placeholder='Limit'
                     type='text'
                     style={{ width: '20%', height: '5vh' }}
+                    value={limit}
+                    onChange={handleLimitChange}
                   />
                   <button className='ms-3 ' type="submit"> Add</button>
                 </div>
@@ -219,6 +214,7 @@ export default function AddPremium(props) {
                     name="selectPeriod"
                     style={{ marginLeft: '1%', width: '25%', height: '5vh' }}
                     onChange={handlePeriodChange}
+                    value={selectedPeriod}
                   >
                     <option value="monthly">Monthly</option>
                     <option value="yearly">Yearly</option>
