@@ -100,19 +100,19 @@ const blockUser = async () => {
           >
             {updateUser && <Update />} {viewUser && <ViewUser />}{" "}
             <Modal show={deleteUser} centered>
-              <Modal.Header closeButton>
-                <Modal.Title> Delete Confirmation </Modal.Title>{" "}
-              </Modal.Header>{" "}
-              <Modal.Body> Are you sure you want to delete ? </Modal.Body>{" "}
-              <Modal.Footer>
-                <Button variant="secondary" onClick={done}>
-                  No{" "}
-                </Button>{" "}
-                <Button variant="danger" onClick={blockUser}>
-                  Yes{" "}
-                </Button>{" "}
-              </Modal.Footer>{" "}
-            </Modal>{" "}
+               
+               <Modal.Title style={{paddingLeft:'110px' ,paddingTop:'20px'}}> Block User Confirmation </Modal.Title>
+              
+             <Modal.Body style={{paddingLeft :'110px' ,paddingTop:'30px' ,paddingBottom:'30px'}}> Are you sure you want to Block User ? </Modal.Body>
+             <Modal.Footer>
+               <Button variant="secondary" onClick={done}>
+                 No
+               </Button>
+               <Button variant="danger" onClick={blockUser}>
+                 Yes
+               </Button>
+             </Modal.Footer> 
+           </Modal> 
             <UserManagement
               showUpdate={showUpdate}
               showView={showView}

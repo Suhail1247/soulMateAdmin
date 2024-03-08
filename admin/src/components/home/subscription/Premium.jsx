@@ -48,7 +48,8 @@ function Premium() {
   };
 
   const handleClose = () => {
-    props.done();
+    setDltBox(false);
+    setSelectedItemId(null);
   };
 
   useEffect(() => {
@@ -119,12 +120,20 @@ function Premium() {
       </div>
 
       <AddPremium open={add} done={done} />
-
       <Modal show={dltBox} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Title style={{ paddingLeft: "120px", paddingTop: "20px" }}>
+          Delete Confirmation
+        </Modal.Title>
+
+        <Modal.Body
+          style={{
+            paddingLeft: "87px",
+            paddingTop: "30px",
+            paddingBottom: "30px",
+          }}
+        >
+          Are you sure you want to delete this item?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             No
