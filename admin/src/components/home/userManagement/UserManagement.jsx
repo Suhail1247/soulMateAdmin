@@ -37,7 +37,7 @@ function UserManagement(props) {
   const [dataSource, setDataSource] = useState([]);
   const [pendingSource, setPendingSource] = useState([]);
   const [searchValue, setSearchValue] = useState(""); // State for search value
-  const [pendingValue,setPendingValue] = useState(""); // pending value 
+  const [pendingValue, setPendingValue] = useState(""); // pending value
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,10 +110,10 @@ function UserManagement(props) {
       },
       sortable: true,
       cell: (row) => (
-        <div style={{ color: row.blocked ? 'red' : 'green' }}>
+        <div style={{ color: row.blocked ? "red" : "green" }}>
           {row.blocked ? "Inactive" : "Active"}
         </div>
-      )
+      ),
     },
     {
       name: "Actions",
@@ -174,29 +174,29 @@ function UserManagement(props) {
     setValue(newValue); // Update the value state when tab changes
   };
 
-
   //pending User search
 
   const PendingFilter = (event) => {
     const keyword = event.target.value.toLowerCase();
     setPendingValue(keyword); // Update pendingValue state
-  
+
     const filteredByName = pendingSource.filter((row) => {
       const fullName = `${row.firstName} ${row.lastName}`.toLowerCase();
       return fullName.includes(keyword);
     });
-  
+
     const filteredByEmail = pendingSource.filter((row) => {
       const email = row.email.toLowerCase();
       return email.includes(keyword);
     });
-  
+    
+
     const filteredData =
       filteredByName.length > 0 ? filteredByName : filteredByEmail;
-  
+
     setPendingData(filteredData); // Update pendingData state
   };
-  
+
   const clearPending = () => {
     setPendingValue("");
     setPendingData(pendingSource);

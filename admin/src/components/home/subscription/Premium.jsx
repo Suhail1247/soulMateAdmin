@@ -90,7 +90,7 @@ function Premium() {
                   <div className="card-body">
                     <p>Plan {index + 1}</p>
                     <p className="card-text">
-                      Price: {item.Price} / {item.Period}
+                      Price: {item.Price}$   / {item.Period}
                     </p>
                     <h5 className="card-title">features</h5>
                     <table
@@ -100,24 +100,44 @@ function Premium() {
                         <tr>
                            <th
                             style={{
-                              border: "1px solid black",
-                              padding: "8px",
+                              
+                              // padding: "8px",
+                              borderBottom:'1px solid #364043',
+                              borderRight:'1px solid #364043',
+                              color:'#fff',
+                              background:"#04AA6D",
+                              fontSize:'0.85em',
+                              fontWeight:'600',
+                              padding:' 0.5em 1em',
+                              textAlign:'left'
+
                             }}
                           >
                             Title
                           </th>
                           <th
                             style={{
-                              border: "1px solid black",
-                              padding: "8px",
+                              borderBottom:'1px solid #364043',
+                              borderRight:'1px solid #364043',
+                              color:'#fff',
+                              fontSize:'0.85em',
+                              background:"#04AA6D",
+                              fontWeight:'600',
+                              padding:' 0.5em 1em',
+                              textAlign:'left'
                             }}
                           >
                             Icon
                           </th>
                           <th
                             style={{
-                              border: "1px solid black",
-                              padding: "8px",
+                              borderBottom:'1px solid #364043',
+                              color:'#fff',
+                              fontSize:'0.85em',
+                              fontWeight:'600',
+                              background:"#04AA6D",
+                              padding:' 0.5em 1em',
+                              textAlign:'left'
                             }}
                           >
                             Limit
@@ -131,24 +151,37 @@ function Premium() {
                           <tr key={index}>
                              <td
                               style={{
-                                border: "1px solid black",
-                                padding: "8px",
+                                borderRight:'1px solid #364043',
+                                color:'#fff',
+                                fontWeight:'400',
+                                padding:"0.65em 1em",
                               }}
                             >
                               {feature.title}
                             </td>
-                            
-                            <td
+                            {/* <td
                               style={{
                                 border: "1px solid black",
                                 padding: "8px",
+                              }}
+                            >
+                              {feature.icon}
+                            </td> */}
+                            
+                            <td
+                              style={{
+                                borderRight:'1px solid #364043',
+                                color:'#fff',
+                                fontWeight:'400',
+                                padding:"0.65em 1em",
                               }}
                             > 
                             </td>
                             <td
                               style={{
-                                border: "1px solid black",
-                                padding: "8px",
+                                 color:'#fff',
+                                fontWeight:'400',
+                                padding:"0.65em 1em",
                               }}
                             >
                               {feature.limit}
