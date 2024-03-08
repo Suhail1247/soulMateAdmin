@@ -109,6 +109,11 @@ function UserManagement(props) {
         }
       },
       sortable: true,
+      cell: (row) => (
+        <div style={{ color: row.blocked ? 'red' : 'green' }}>
+          {row.blocked ? "Inactive" : "Active"}
+        </div>
+      )
     },
     {
       name: "Actions",

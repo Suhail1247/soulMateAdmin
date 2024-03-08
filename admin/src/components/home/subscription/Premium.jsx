@@ -93,18 +93,72 @@ function Premium() {
                       Price: {item.Price} / {item.Period}
                     </p>
                     <h5 className="card-title">features</h5>
-                    <div>
-                      {item.Features.map((feature, index) => (
-                        <div
-                          key={index}
-                           className=""
-                          style={{ marginBottom: "10px" }}
-                        ><span className="me-5">limit:{feature.limit}</span>
+                    <table
+                      style={{ width: "100%", borderCollapse: "collapse" }}
+                    >
+                      <thead>
+                        <tr>
+                           <th
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
+                            Title
+                          </th>
+                          <th
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
+                            Icon
+                          </th>
+                          <th
+                            style={{
+                              border: "1px solid black",
+                              padding: "8px",
+                            }}
+                          >
+                            Limit
+                          </th>
+                           
                           
-                          title:{feature.title}
-                        </div>
-                      ))}
-                    </div>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {item.Features.map((feature, index) => (
+                          <tr key={index}>
+                             <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "8px",
+                              }}
+                            >
+                              {feature.title}
+                            </td>
+                            
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "8px",
+                              }}
+                            > 
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "8px",
+                              }}
+                            >
+                              {feature.limit}
+                            </td>
+                            
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
                     <button
                       className="btn btn-danger"
                       onClick={() => deleteCPlan(item._id)}
