@@ -15,9 +15,12 @@ export const userSchema=new mongoose.Schema({
     NoOfBoost:{
         type:Number
     },
-    Features:{
-        type:[String],
-    },
+    Features: [
+        {
+          title: String,
+          icon: String,
+          limit: String,
+        }],
     Type:{
         type:String,
         required:true,
