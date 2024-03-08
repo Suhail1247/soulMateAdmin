@@ -52,13 +52,26 @@ export async function registerUser(credential) {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data.data;
+      return response.data.users;
     } catch (error) {
       console.error("Error fetching user data:", error);
       throw error;
     }
   };
-
+  export const fetchPendingData = async () => {
+    try {
+      const token = await localStorage.getItem("token");
+      const response = await axios.get("/api/getUsers", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.pending;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      throw error;
+    }
+  };
   export const createPlan=async (plan)=>{
     try {
       console.log('====================================');

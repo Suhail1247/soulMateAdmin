@@ -107,11 +107,14 @@ export async function login(req, res) {
 
 export async function getUsers(req, res) {
   try {
-    const users = await userModel.find({});
+    const users = await userModel.find({ firstName: { $ne: null }, lastName: { $ne: null } });
+    const pending = await userModel.find({ firstName: null, lastName: null });
+
     res.status(200).json({
       error: false,
       message: "User details retrieved successfully",
-      data: users,
+     users,
+     pending
     });
   } catch (error) {
     console.error("Error retrieving users:", error);
@@ -158,26 +161,24 @@ export async function getAdmin(req, res) {
 export async function createPlan(req, res) {
   try {
     const userId = req.user.userid;
+    console.log(req.body, 'adsikugfhewisudfhb');
     const { Type, NoOfBoost, Price, Period, Features } = req.body;
 
-    if (Type == "Normal") {
-      if (!NoOfBoost) {
-        return res
-          .status(400)
-          .send({ error: "No Of Boost should not be empty" });
-      } else if (!Price) {
-        return res.status(400).send({ error: "Price should not be empty" });
-      } else if (!Period) {
-        return res.status(400).send({ error: "Period should not be empty" });
+    if (Type === "Normal") {
+      if (!NoOfBoost || !Price || !Period) {
+        return res.status(400).send({ error: "Invalid request parameters" });
       }
+
       const existPlan = await adminSubscription.findOne({
         NoOfBoost,
         Price,
         Period,
       });
+
       if (existPlan) {
-        return res.status(400).send({ error: "Plan exist" });
+        return res.status(400).send({ error: "Plan already exists" });
       }
+
       const plan = new adminSubscription({
         userId,
         Type,
@@ -185,18 +186,12 @@ export async function createPlan(req, res) {
         Price,
         Period,
       });
-      console.log(plan);
+
       await plan.save();
-      return res
-        .status(201)
-        .send({ error: false, msg: "Plan created successfully" });
-    } else if (Type == "Premium") {
-      if (!Features) {
-        return res.status(400).send({ error: "Features should not be empty" });
-      } else if (!Price) {
-        return res.status(400).send({ error: "Price should not be empty" });
-      } else if (!Period) {
-        return res.status(400).send({ error: "Period should not be empty" });
+      return res.status(201).send({ error: false, msg: "Plan created successfully" });
+    } else if (Type === "Premium") {
+      if (!Features || !Price || !Period) {
+        return res.status(400).send({ error: "Invalid request parameters" });
       }
 
       const plan = new adminSubscription({
@@ -208,16 +203,16 @@ export async function createPlan(req, res) {
       });
 
       await plan.save();
-
-      return res
-        .status(201)
-        .send({ error: false, msg: "Plan created successfully" });
+      return res.status(201).send({ error: false, msg: "Plan created successfully" });
+    } else {
+      return res.status(400).send({ error: "Invalid plan type" });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).send({ error: "Internal Server Error" });
   }
 }
+
 
 export async function getPlan(req, res) {
   try {
