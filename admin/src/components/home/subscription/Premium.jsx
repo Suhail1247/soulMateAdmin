@@ -48,7 +48,8 @@ function Premium() {
   };
 
   const handleClose = () => {
-    props.done();
+    setDltBox(false);
+    setSelectedItemId(null);
   };
 
   useEffect(() => {
@@ -89,21 +90,108 @@ function Premium() {
                   <div className="card-body">
                     <p>Plan {index + 1}</p>
                     <p className="card-text">
-                      Price: {item.Price} / {item.Period}
+                      Price: {item.Price}$   / {item.Period}
                     </p>
                     <h5 className="card-title">features</h5>
-                    <div>
-                      {item.Features.map((feature, index) => (
-                        <div
-                          key={index}
-                           className=""
-                          style={{ marginBottom: "10px" }}
-                        ><span className="me-5">limit:{feature.limit}</span>
+                    <table
+                      style={{ width: "100%", borderCollapse: "collapse" }}
+                    >
+                      <thead>
+                        <tr>
+                           <th
+                            style={{
+                              
+                              // padding: "8px",
+                              borderBottom:'1px solid #364043',
+                              borderRight:'1px solid #364043',
+                              color:'#fff',
+                              background:"#04AA6D",
+                              fontSize:'0.85em',
+                              fontWeight:'600',
+                              padding:' 0.5em 1em',
+                              textAlign:'left'
+
+                            }}
+                          >
+                            Title
+                          </th>
+                          <th
+                            style={{
+                              borderBottom:'1px solid #364043',
+                              borderRight:'1px solid #364043',
+                              color:'#fff',
+                              fontSize:'0.85em',
+                              background:"#04AA6D",
+                              fontWeight:'600',
+                              padding:' 0.5em 1em',
+                              textAlign:'left'
+                            }}
+                          >
+                            Icon
+                          </th>
+                          <th
+                            style={{
+                              borderBottom:'1px solid #364043',
+                              color:'#fff',
+                              fontSize:'0.85em',
+                              fontWeight:'600',
+                              background:"#04AA6D",
+                              padding:' 0.5em 1em',
+                              textAlign:'left'
+                            }}
+                          >
+                            Limit
+                          </th>
+                           
                           
-                          title:{feature.title}
-                        </div>
-                      ))}
-                    </div>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {item.Features.map((feature, index) => (
+                          <tr key={index}>
+                             <td
+                              style={{
+                                borderRight:'1px solid #364043',
+                                color:'#fff',
+                                fontWeight:'400',
+                                padding:"0.65em 1em",
+                              }}
+                            >
+                              {feature.title}
+                            </td>
+                            {/* <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "8px",
+                              }}
+                            >
+                              {feature.icon}
+                            </td> */}
+                            
+                            <td
+                              style={{
+                                borderRight:'1px solid #364043',
+                                color:'#fff',
+                                fontWeight:'400',
+                                padding:"0.65em 1em",
+                              }}
+                            > 
+                            </td>
+                            <td
+                              style={{
+                                 color:'#fff',
+                                fontWeight:'400',
+                                padding:"0.65em 1em",
+                              }}
+                            >
+                              {feature.limit}
+                            </td>
+                            
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
                     <button
                       className="btn btn-danger"
                       onClick={() => deleteCPlan(item._id)}
@@ -119,12 +207,20 @@ function Premium() {
       </div>
 
       <AddPremium open={add} done={done} />
-
       <Modal show={dltBox} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Title style={{ paddingLeft: "120px", paddingTop: "20px" }}>
+          Delete Confirmation
+        </Modal.Title>
+
+        <Modal.Body
+          style={{
+            paddingLeft: "87px",
+            paddingTop: "30px",
+            paddingBottom: "30px",
+          }}
+        >
+          Are you sure you want to delete this item?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             No

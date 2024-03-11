@@ -37,6 +37,7 @@ function UserManagement(props) {
   const [dataSource, setDataSource] = useState([]);
   const [pendingSource, setPendingSource] = useState([]);
   const [searchValue, setSearchValue] = useState(""); // State for search value
+  const [pendingValue, setPendingValue] = useState(""); // pending value
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,12 +104,16 @@ function UserManagement(props) {
       selector: (row) => {
         if (row.blocked) {
           return "inactive";
-        }
-        else{
-        return "Active";
+        } else {
+          return "Active";
         }
       },
       sortable: true,
+      cell: (row) => (
+        <div style={{ color: row.blocked ? "red" : "green" }}>
+          {row.blocked ? "Inactive" : "Active"}
+        </div>
+      ),
     },
     {
       name: "Actions",
@@ -121,22 +126,20 @@ function UserManagement(props) {
           <FaRegEdit
             onClick={() => update(row)}
             style={{ cursor: "pointer", color: "blue", marginRight: "20px" }}
-          />{row.blocked?
-            <CgUnblock 
-            onClick={() => blockUser(row._id)}
-            style={{ cursor: "pointer", color: "gray" }} 
-            title="Unblock User" 
+          />
+          {row.blocked ? (
+            <CgUnblock
+              onClick={() => blockUser(row._id)}
+              style={{ cursor: "pointer", color: "gray" }}
+              title="Unblock User"
             />
-         
-            :
+          ) : (
             <ImBlocked
-            onClick={() => blockUser(row._id)}
-            style={{ cursor: "pointer", color: "red" }} 
-            title="Block User" 
+              onClick={() => blockUser(row._id)}
+              style={{ cursor: "pointer", color: "red" }}
+              title="Block User"
             />
-            
-          }
-        
+          )}
         </div>
       ),
       sortable: false,
@@ -171,6 +174,34 @@ function UserManagement(props) {
     setValue(newValue); // Update the value state when tab changes
   };
 
+  //pending User search
+
+  const PendingFilter = (event) => {
+    const keyword = event.target.value.toLowerCase();
+    setPendingValue(keyword); // Update pendingValue state
+
+    const filteredByName = pendingSource.filter((row) => {
+      const fullName = `${row.firstName} ${row.lastName}`.toLowerCase();
+      return fullName.includes(keyword);
+    });
+
+    const filteredByEmail = pendingSource.filter((row) => {
+      const email = row.email.toLowerCase();
+      return email.includes(keyword);
+    });
+    
+
+    const filteredData =
+      filteredByName.length > 0 ? filteredByName : filteredByEmail;
+
+    setPendingData(filteredData); // Update pendingData state
+  };
+
+  const clearPending = () => {
+    setPendingValue("");
+    setPendingData(pendingSource);
+  };
+
   return (
     <div>
       <Box sx={{ borderBottom: 0, borderColor: "divider" }}>
@@ -200,7 +231,7 @@ function UserManagement(props) {
             className="form-control"
             name="search"
             id="search"
-            placeholder="Search "
+            placeholder="Search..."
             value={searchValue}
             onChange={handleFilter}
           />
@@ -242,13 +273,13 @@ function UserManagement(props) {
             className="form-control"
             name="search"
             id="search"
-            placeholder="Search "
-            value={searchValue}
-            onChange={handleFilter}
+            placeholder="Search... "
+            value={pendingValue}
+            onChange={PendingFilter}
           />
-          {searchValue && (
+          {pendingValue && (
             <MdClear
-              onClick={clearSearch}
+              onClick={clearPending}
               style={{
                 position: "absolute",
                 top: "50%",

@@ -10,6 +10,7 @@ import Navbar from "./Navbar";
 
 function home() {
   const [userData, setUserData] = useState({});
+  const [pendingData, setPendingData] = useState([]);
   const navigate = useNavigate();
   const [id, setId] = useState();
 
@@ -47,27 +48,25 @@ function home() {
     setDeleteUser(false);
   };
 
-const blockUser = async () => {
-  try {
-    // Create a copy of the user data
-    const updatedUserData = [...userData];
+  const blockUser = async () => {
+    try {
+   
+      const updatedUserData = [...userData];
+ 
+      const userIndex = updatedUserData.findIndex((user) => user._id === id);
 
-    // Find the user by ID in the copied array
-    const userIndex = updatedUserData.findIndex((user) => user._id === id);
+      updatedUserData[userIndex].blocked = !updatedUserData[userIndex].blocked;
 
-    updatedUserData[userIndex].blocked = !updatedUserData[userIndex].blocked;
+      setUserData(updatedUserData);
 
-    setUserData(updatedUserData);
+      await submitDetails(id, updatedUserData[userIndex]);
 
-    await submitDetails(id, updatedUserData[userIndex]);
-
-    window.location.reload();
-  } catch (error) {
-    console.error("Error blocking user:", error);
-    // Handle error, if any
-  }
-};
-
+      window.location.reload();
+    } catch (error) {
+      console.error("Error blocking user:", error);
+      // Handle error, if any
+    }
+  };
 
   const showUpdate = () => {
     setUpdateUser(true);
@@ -98,21 +97,31 @@ const blockUser = async () => {
             className="col-10 "
             style={{ backgroundColor: "#D3D3D3", height: "90vh" }}
           >
-            {updateUser && <Update />} {viewUser && <ViewUser />}{" "}
+            {updateUser && <Update />} {viewUser && <ViewUser />}
             <Modal show={deleteUser} centered>
-              <Modal.Header closeButton>
-                <Modal.Title> Delete Confirmation </Modal.Title>{" "}
-              </Modal.Header>{" "}
-              <Modal.Body> Are you sure you want to delete ? </Modal.Body>{" "}
+              <Modal.Title style={{ paddingLeft: "110px", paddingTop: "20px" }}>
+                Block User Confirmation
+              </Modal.Title>
+
+              <Modal.Body
+                style={{
+                  paddingLeft: "110px",
+                  paddingTop: "30px",
+                  paddingBottom: "30px",
+                }}
+              >
+                {" "}
+                Are you sure you want to Block User ?{" "}
+              </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={done}>
-                  No{" "}
-                </Button>{" "}
+                  No
+                </Button>
                 <Button variant="danger" onClick={blockUser}>
-                  Yes{" "}
-                </Button>{" "}
-              </Modal.Footer>{" "}
-            </Modal>{" "}
+                  Yes
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <UserManagement
               showUpdate={showUpdate}
               showView={showView}
